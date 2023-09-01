@@ -42,7 +42,7 @@ impl PriceFeed for Deribit {
     async fn retrieve_price(&self, asset_pair: AssetPair, instant: OffsetDateTime) -> Result<f64> {
         let client = Client::new();
         let asset_pair_translation = self.translate_asset_pair(asset_pair).unwrap();
-        let start_time = instant.unix_timestamp() * 1000 + 1000;
+        let start_time = instant.unix_timestamp() * 1000;
         info!("sending deribit http request");
         let res: Response = client
             .get("https://www.deribit.com/api/v2/public/get_book_summary_by_currency")
