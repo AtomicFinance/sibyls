@@ -45,7 +45,7 @@ impl PriceFeed for Deribit {
         let start_time = instant.unix_timestamp() * 1000;
         info!("sending deribit http request");
         let res: Response = client
-            .get("https://www.deribit.com/api/v2/public/get_book_summary_by_currency")
+            .get("https://www.deribit.com/api/v2/public/get_last_settlements_by_currency")
             .query(&[
                 ("currency", asset_pair_translation),
                 ("type", "settlement"),
@@ -72,5 +72,26 @@ impl PriceFeed for Deribit {
 
         let index_price = res.settlements[0].index_price;
         Ok(index_price)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use time::OffsetDateTime;
+
+    #[tokio::test]
+    async fn test_retrieve_price() {
+        let deribit = Deribit {};
+        let now = OffsetDateTime::now_utc();
+        let result = deribit.retrieve_price(AssetPair::BTCUSD, now).await;
+
+        match result {
+            Ok(price) => {
+                println!("The price is: {}", price);
+                assert!(price > 0.0);
+            }
+            Err(e) => panic!("API call failed with error: {:?}", e),
+        }
     }
 }
