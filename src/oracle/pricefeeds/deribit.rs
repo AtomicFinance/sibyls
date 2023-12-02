@@ -48,7 +48,7 @@ impl PriceFeed for Deribit {
             .get("https://www.deribit.com/api/v2/public/get_last_settlements_by_currency")
             .query(&[
                 ("currency", asset_pair_translation),
-                ("type", "settlement"),
+                ("type", "delivery"),
                 ("count", "1"),
                 ("search_start_timestamp", &start_time.to_string()),
             ])
